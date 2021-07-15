@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./todoapp.css";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import CheckIcon from "@material-ui/icons/Check";
+import swal from 'sweetalert';
 
 function Todo() {
   const [task, setTask] = useState("");
@@ -18,9 +19,28 @@ function Todo() {
       setTask("");
     }
   };
+
   const deleteItem = (id) => {
-    setTaskList(tasklist.filter((todo) => todo.id !== id));
+    swal({
+        title: "Are you sure?",
+        text: "Once deleted, you will not be able to recover this task!",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      })
+      .then((willDelete) => {
+        if (willDelete) {
+            setTaskList(tasklist.filter((todo) => todo.id !== id));
+          swal(" Your task has been deleted!", {
+            icon: "success",
+          });
+        } else {
+          swal("Your task is safe!");
+        }
+      });
+    
   };
+
   const completedItem = (id) => {
     const completedTask = [...tasklist].map((todo) => {
       if (todo.id === id) {
@@ -29,6 +49,7 @@ function Todo() {
       return todo;
     });
     setTaskList(completedTask);
+    swal("Good job!", "You completed the task successfully!", "success");
   };
 
   return (
