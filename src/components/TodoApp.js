@@ -95,15 +95,22 @@ function Todo() {
   
   }
   const AddEditItem = ()=>{
-    const newText =[...tasklist].map((todo)=>{
-      if(todo.id=== editText){
-        todo.value = task
-      }
-      return todo
-    })
-    setTaskList(newText);
-    setToggleEdit(true);
-    setTask("")
+    if(task!=""){
+      const newText =[...tasklist].map((todo)=>{
+        if(todo.id=== editText){
+          todo.value = task
+        }
+        return todo
+      })
+      setTaskList(newText);
+      setToggleEdit(true);
+      setTask("")
+
+    }
+    else{
+      swal("please add a task!");
+    }
+    
   }
 
 
@@ -146,13 +153,19 @@ function Todo() {
                 className="delete"
                 onClick={() => deleteItem(item.id)}
               ></DeleteForeverIcon>
-              <CheckIcon
-                className="completed"
-                onClick={() => completedItem(item.id)}
-              ></CheckIcon>
-              <EditIcon className="edit"
-              onClick={()=>editItem(item.id)}
-              ></EditIcon>
+              
+             {item.isCompleted?(null):(
+               <CheckIcon
+               className="completed"
+               onClick={() => completedItem(item.id)}
+             ></CheckIcon>
+             )} 
+             {item.isCompleted?(null):(
+               <EditIcon className="edit"
+               onClick={()=>editItem(item.id)}
+               ></EditIcon>
+             )}
+              
             </li>
           ))}
         </ul>
