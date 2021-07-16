@@ -13,7 +13,7 @@
   border: none;
   color: black;
   border-bottom: 5px dashed black;
-  min-width: 400px;
+  min-width: 200px;
   margin-top: 40px;
   padding: 5px;
   font-size: 1rem;
@@ -31,7 +31,7 @@
 
 .todo .add-btn {
   padding: 10px;
-  border-radius: 30%;
+  border-radius: 20px;
   color: black;
   font-size: 1.2rem;
   background-color: yellow;

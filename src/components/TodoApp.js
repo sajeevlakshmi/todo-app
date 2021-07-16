@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import "./todoapp.css";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import CheckIcon from "@material-ui/icons/Check";
@@ -7,6 +7,33 @@ import swal from 'sweetalert';
 function Todo() {
   const [task, setTask] = useState("");
   const [tasklist, setTaskList] = useState([]);
+  const [status,setStatus]=useState('AllTask');
+  const[filteredTask,setFilteredTask]=useState([])
+  
+  useEffect(() => {
+    const json = localStorage.getItem("tasklist");
+    const loadedTodos = JSON.parse(json);
+    if (loadedTodos) {
+      setTaskList(loadedTodos);
+    }
+  }, []);
+
+  useEffect(() => {
+   filterHandler();
+   const json = JSON.stringify(tasklist);
+   localStorage.setItem("tasklist", json);
+  }, [status,tasklist])
+
+  const filterHandler=()=>{
+    switch(status){
+      case "completedTasks":setFilteredTask(tasklist.filter((todo)=>todo.isCompleted===true))
+      break;
+      case "uncompletedTasks":setFilteredTask(tasklist.filter((todo)=>todo.isCompleted===false))
+      break;
+      default:setFilteredTask(tasklist)
+      break;
+    }
+  }  
 
   const AddTask = () => {
     if (task !== "") {
@@ -22,7 +49,7 @@ function Todo() {
 
   const deleteItem = (id) => {
     swal({
-        title: "Are you sure?",
+        title: "Are you sure to Delete?",
         text: "Once deleted, you will not be able to recover this task!",
         icon: "warning",
         buttons: true,
@@ -52,6 +79,8 @@ function Todo() {
     swal("Good job!", "You completed the task successfully!", "success");
   };
 
+
+
   return (
     <div className="todo">
       <input
@@ -63,10 +92,10 @@ function Todo() {
         placeholder="add text here "
       />
       <button className="add-btn" onClick={AddTask}>
-        Add
+        Add Task
       </button>
    
-        <select name="todos" className="todo-list">
+        <select onChange={(e)=>setStatus(e.target.value)}name="todos" className="todo-list">
           <option value="AllTask">All Task</option>
           <option value="completedTasks">Completed Tasks</option>
           <option value="uncompletedTasks">UnCompleted Tasks</option>
@@ -74,7 +103,7 @@ function Todo() {
     
       {tasklist !== [] ? (
         <ul>
-          {tasklist.map((item) => (
+          {filteredTask.map((item) => (
             <li
               className={item.isCompleted ? "crossText" : "listItem"}
               key={item.id}
