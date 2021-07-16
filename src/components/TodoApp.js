@@ -2,13 +2,16 @@ import React, { useState,useEffect } from "react";
 import "./todoapp.css";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import CheckIcon from "@material-ui/icons/Check";
+import EditIcon from '@material-ui/icons/Edit';
 import swal from 'sweetalert';
 
 function Todo() {
   const [task, setTask] = useState("");
   const [tasklist, setTaskList] = useState([]);
   const [status,setStatus]=useState('AllTask');
-  const[filteredTask,setFilteredTask]=useState([])
+  const[filteredTask,setFilteredTask]=useState([]);
+  const[toggleEdit,setToggleEdit] =useState(true);
+  const[editText,setEditText]=useState("");
   
   useEffect(() => {
     const json = localStorage.getItem("tasklist");
@@ -45,6 +48,9 @@ function Todo() {
       setTaskList([...tasklist, taskDetails]);
       setTask("");
     }
+    else{
+      swal("please add a task!");
+    }
   };
 
   const deleteItem = (id) => {
@@ -79,6 +85,27 @@ function Todo() {
     swal("Good job!", "You completed the task successfully!", "success");
   };
 
+  const editItem = (id)=>{
+    setToggleEdit(false)
+    const edittask = tasklist.find((todo)=>{
+        return (todo.id === id)
+    })
+    setTask(edittask.value)
+    setEditText(id)
+  
+  }
+  const AddEditItem = ()=>{
+    const newText =[...tasklist].map((todo)=>{
+      if(todo.id=== editText){
+        todo.value = task
+      }
+      return todo
+    })
+    setTaskList(newText);
+    setToggleEdit(true);
+    setTask("")
+  }
+
 
 
   return (
@@ -91,9 +118,13 @@ function Todo() {
         onChange={(e) => setTask(e.target.value)}
         placeholder="add text here "
       />
-      <button className="add-btn" onClick={AddTask}>
+      {toggleEdit?
+      (<button className="add-btn" onClick={AddTask}>
         Add Task
-      </button>
+      </button>):(<button className="add-btn" onClick={AddEditItem}>
+        edit Task
+      </button>)}
+      
    
         <select onChange={(e)=>setStatus(e.target.value)}name="todos" className="todo-list">
           <option value="AllTask">All Task</option>
@@ -105,10 +136,12 @@ function Todo() {
         <ul>
           {filteredTask.map((item) => (
             <li
+           
               className={item.isCompleted ? "crossText" : "listItem"}
               key={item.id}
             >
               {item.value}
+              
               <DeleteForeverIcon
                 className="delete"
                 onClick={() => deleteItem(item.id)}
@@ -117,6 +150,9 @@ function Todo() {
                 className="completed"
                 onClick={() => completedItem(item.id)}
               ></CheckIcon>
+              <EditIcon className="edit"
+              onClick={()=>editItem(item.id)}
+              ></EditIcon>
             </li>
           ))}
         </ul>
