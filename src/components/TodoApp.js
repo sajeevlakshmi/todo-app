@@ -108,7 +108,7 @@ function Todo() {
 
     }
     else{
-      swal("please add a task!");
+      swal("please enter something");
     }
     
   }
