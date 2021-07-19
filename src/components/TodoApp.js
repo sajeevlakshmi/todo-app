@@ -102,6 +102,7 @@ function Todo() {
         }
         return todo
       })
+      swal("You edited the task successfully!");
       setTaskList(newText);
       setToggleEdit(true);
       setTask("")
@@ -112,8 +113,6 @@ function Todo() {
     }
     
   }
-
-
 
   return (
     <div className="todo">
